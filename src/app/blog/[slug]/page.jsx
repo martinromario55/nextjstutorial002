@@ -2,22 +2,28 @@ import React, { Suspense } from 'react'
 import styles from './singlePost.module.css'
 import Image from 'next/image'
 import PostUser from '@/components/postUser/postUser'
+import { getPost } from '@/components/lib/data'
 
-const getData = async slug => {
-  try {
-    const res = await fetch(
-      `https://jsonplaceholder.typicode.com/posts/${slug}`
-    )
-    const data = await res.json()
-    return data
-  } catch (error) {
-    throw new Error('Something went wrong while fetching posts data')
-  }
-}
+// Fetch Data using API
+// const getData = async slug => {
+//   try {
+//     const res = await fetch(
+//       `https://jsonplaceholder.typicode.com/posts/${slug}`
+//     )
+//     const data = await res.json()
+//     return data
+//   } catch (error) {
+//     throw new Error('Something went wrong while fetching posts data')
+//   }
+// }
 
 const SlugPage = async ({ params }) => {
   const { slug } = params
-  const post = await getData(slug)
+  // With API
+  // const post = await getData(slug)
+
+  // Without API
+  const post = getPost(slug)
 
   return (
     <div className={styles.container}>
