@@ -21,16 +21,27 @@ export const metadata = {
 //   }
 // }
 
+// Fetch data using Internal API
+const getData = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/blog')
+    return res.json()
+  } catch (error) {
+    console.log('Error', error)
+    throw new Error('Something went wrong while fetching posts data')
+  }
+}
+
 const BlogPage = async () => {
   // With API
-  // const posts = await getData()
+  const posts = await getData()
 
   // Without API
-  const posts = await getPosts()
+  // const posts = await getPosts()
   return (
     <div className={styles.container}>
       {posts?.map(post => (
-        <div className={styles.post} key={post.id}>
+        <div className={styles.post} key={post._id}>
           <PostCard post={post} />
         </div>
       ))}

@@ -16,9 +16,24 @@ import { getPost } from '@/lib/data'
 //     throw new Error('Something went wrong while fetching posts data')
 //   }
 // }
+
+// Fetch Data using Internal API
+const getData = async slug => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/blog/${slug}`)
+    return res.json()
+  } catch (error) {
+    console.log('Error', error)
+    throw new Error('Something went wrong while fetching posts data')
+  }
+}
+
 export const generateMetadata = async ({ params }) => {
   const { slug } = params
-  const post = await getPost(slug)
+
+  const post = await getData(slug)
+
+  // const post = await getPost(slug)
 
   return {
     title: post.title,
