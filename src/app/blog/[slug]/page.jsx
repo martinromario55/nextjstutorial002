@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import styles from './singlePost.module.css'
 import Image from 'next/image'
 import PostUser from '@/components/postUser/postUser'
-import { getPost } from '@/components/lib/data'
+import { getPost } from '@/lib/data'
 
 // Fetch Data using API
 // const getData = async slug => {
