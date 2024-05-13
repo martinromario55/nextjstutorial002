@@ -5,13 +5,7 @@ import { connectToDb } from './utils'
 import { signIn, signOut } from './auth'
 import bcrypt from 'bcrypt'
 
-export const addPost = async formData => {
-  'use server'
-
-  // const title = formData.get('title')
-  // const desc = formData.get('desc')
-  // const slug = formData.get('slug')
-
+export const addPost = async (prevState, formData) => {
   const { title, desc, slug, userId } = Object.fromEntries(formData)
   console.log(title, desc, slug, userId)
 
@@ -27,14 +21,15 @@ export const addPost = async formData => {
     await newPost.save()
     console.log('Saved to db')
     revalidatePath('/blog')
+    revalidatePath('/admin')
   } catch (error) {
     console.log(error)
-    throw new Error('Something went wrong while creating new post.')
+    return { error: 'Something went wrong while creating new post.' }
   }
 }
 
 // Delete Post
-export const deletePost = async formData => {
+export const deletePost = async (prevState, formData) => {
   const { id } = Object.fromEntries(formData)
 
   // delete
@@ -44,9 +39,51 @@ export const deletePost = async formData => {
     await Post.findByIdAndDelete(id)
     console.log('Deleted from db')
     revalidatePath('/blog')
+    revalidatePath('/admin')
   } catch (error) {
     console.log(error)
-    throw new Error('Something went wrong while deleting post.')
+    return { error: 'Something went wrong while deleting post.' }
+  }
+}
+
+// Add User
+export const addUser = async (prevState, formData) => {
+  const { username, email, password, img } = Object.fromEntries(formData)
+  console.log(title, desc, slug, userId)
+
+  // Post
+  try {
+    connectToDb()
+    const newUser = new Post({
+      username,
+      email,
+      password,
+      img,
+    })
+    await newUser.save()
+    console.log('Saved to db')
+    revalidatePath('/admin')
+  } catch (error) {
+    console.log(error)
+    return { error: 'Something went wrong while creating new user.' }
+  }
+}
+
+// Delete User
+export const deleteUser = async formData => {
+  const { id } = Object.fromEntries(formData)
+
+  // delete
+  try {
+    connectToDb()
+
+    await Post.deleteMany({ userId: id })
+    await User.findByIdAndDelete(id)
+    console.log('Deleted from db')
+    revalidatePath('/admin')
+  } catch (error) {
+    console.log(error)
+    return { error: 'Something went wrong while deleting user.' }
   }
 }
 
