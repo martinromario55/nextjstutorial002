@@ -60,12 +60,12 @@ export const handleLogout = async () => {
   await signOut('github')
 }
 
-export const register = async formData => {
+export const register = async (previousState, formData) => {
   const { username, email, password, passwordRepeat, img } =
     Object.fromEntries(formData)
 
   if (password !== passwordRepeat) {
-    return 'Passwords do not match!'
+    return { error: 'Passwords do not match!' }
   }
 
   // hash password with bcrypt
@@ -78,7 +78,7 @@ export const register = async formData => {
     const user = await User.findOne({ username })
 
     if (user) {
-      return 'User already exists!'
+      return { error: 'User already exists!' }
     }
 
     const newUser = new User({
@@ -89,21 +89,23 @@ export const register = async formData => {
     })
     await newUser.save()
     console.log('Saved to db')
+    return { success: true }
   } catch (error) {
     console.log('Error', error)
-    throw new Error('Something went wrong while registering.')
+    return { error: 'Something went wrong while registering.' }
   }
 }
 
-
-export const login = async formData => {
-  const { username, password,  } =
-    Object.fromEntries(formData)
+export const login = async (previousState, formData) => {
+  const { username, password } = Object.fromEntries(formData)
 
   try {
-    await signIn("credentials", {username, password})
+    await signIn('credentials', { username, password })
   } catch (error) {
-    console.log('Error', error)
-    throw new Error('Something went wrong while logging in.')
+    // console.log('Error:', error)
+    if (error.message.includes('credentialssignin')) {
+      return { error: 'Invalid username or password!' }
+    }
+    throw error
   }
 }
